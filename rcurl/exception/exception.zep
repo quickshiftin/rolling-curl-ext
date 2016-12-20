@@ -1,4 +1,4 @@
-namespace Rcurl;
+namespace Rcurl\Exception;
 
 class Exception extends \Exception
 {
