@@ -1,0 +1,6 @@
+namespace Rcurl;
+
+class Curl
+{
+
+}
