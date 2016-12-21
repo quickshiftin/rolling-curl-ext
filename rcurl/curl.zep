@@ -11,7 +11,7 @@ class Curl
      * @var int
      *
      * Window size is the max number of simultaneous connections allowed.
-	 * 
+     * 
      * REMEMBER TO RESPECT THE SERVERS:
      * Sending too many requests at one time can easily be perceived
      * as a DOS attack. Increase this window_size if you are making requests
@@ -38,12 +38,7 @@ class Curl
      *
      * Set your base options that you want to be used with EVERY request.
      */
-    protected options = [
-		CURLOPT_SSL_VERIFYPEER => 0,
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_CONNECTTIMEOUT => 30,
-        CURLOPT_TIMEOUT        => 30
-	];
+    protected options = [];
 
     /**
      * @var array
@@ -84,10 +79,18 @@ class Curl
      *
      * @return void
      */
-	public function __construct(var callback=null) -> void
+    public function __construct(var callback=null) -> void
     {
         let this->callback = callback;
+
+        let this->options = [
+            CURLOPT_SSL_VERIFYPEER : false,
+            CURLOPT_RETURNTRANSFER : true,
+            CURLOPT_CONNECTTIMEOUT : 30,
+            CURLOPT_TIMEOUT        : 30
+        ];
     }
 
-    public function add(var $item) {}
+    public function add(var item) {}
 }
+
