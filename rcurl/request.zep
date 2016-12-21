@@ -2,11 +2,11 @@ namespace Rcurl;
 
 class Request
 {
-	public url       = false;
-	public method    = 'GET';
-	public post_data = null;
-	public headers   = null;
-	public options   = null;
+	public url;
+	public method;
+	public post_data;
+	public headers;
+	public options;
 
     /**
      * @param string url
@@ -17,15 +17,15 @@ class Request
      */
     function __construct(url, method ="GET", post_data=null, headers=null, options=null)
     {
-        this->url       = url;
-        this->method    = method;
-        this->post_data = post_data;
-        this->headers   = headers;
-        this->options   = options;
+        let this->url       = url;
+        let this->method    = method;
+        let this->post_data = post_data;
+        let this->headers   = headers;
+        let this->options   = options;
     }
 
     public function __destruct()
     {
-        unset($this->url, $this->method, $this->post_data, $this->headers, $this->options);
+        \unset(this->url, this->method, this->post_data, this->headers, this->options);
     }
 }
