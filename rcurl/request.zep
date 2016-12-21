@@ -15,7 +15,7 @@ class Request
      * @param headers
      * @param options
      */
-    function __construct(url, method ="GET", post_data=null, headers=null, options=null)
+    function __construct(var url, var method="GET", var post_data=null, var headers=null, var options=null)
     {
         let this->url       = url;
         let this->method    = method;
@@ -26,6 +26,10 @@ class Request
 
     public function __destruct()
     {
-        \unset(this->url, this->method, this->post_data, this->headers, this->options);
+        unset(this->url);
+        unset(this->method);
+        unset(this->post_data);
+        unset(this->headers);
+        unset(this->options);
     }
 }
