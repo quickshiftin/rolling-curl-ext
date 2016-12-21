@@ -9,7 +9,7 @@ class Request extends \Rcurl\Request
 	 *
 	 * @param group The group to be set
 	 */
-    function setGroup(var group)
+    public function setGroup(var group)
     {
         if(!(group instanceof Request)) {
             throw new \Rcurl\Group\Exception(
