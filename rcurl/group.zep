@@ -38,4 +38,31 @@ class Group
         throw new Exception(
             "add: Request needs to be of instance Rcurl\Group\Request or an array");
     }
+
+    function addToRC(var rc)
+    {
+        if(!(rc instanceof Curl)) {
+            throw new Exception("addToRC: RC needs to be of instance Rcurl\Curl");
+        }
+
+        var ret1;
+        while(count(this->requests) > 0) {
+            if(!rc->add(array_shift(this->requests))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function process(var output, var info, var request)
+    {
+        let this->finished_requests = this->finished_request + 1;
+
+        if(this->finished_requests >= this->num_requests) {
+            this->finished();
+        }
+    }
+
+    public function finished() {}
 }
