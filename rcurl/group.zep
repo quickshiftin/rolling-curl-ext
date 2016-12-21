@@ -10,7 +10,7 @@ class Group
 
     public function __construct(var name)
     {
-       let $this->name = name;
+       let this->name = name;
     }
 
     public function add(var request)
