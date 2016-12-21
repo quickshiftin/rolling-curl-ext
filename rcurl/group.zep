@@ -15,7 +15,7 @@ class Group
        let this->name = name;
     }
 
-    public function add(var request)
+    public function add(var request) -> boolean
     {
         if(request instanceof \Rcurl\Group\Request) {
             request->setGroup(this);
@@ -39,13 +39,8 @@ class Group
             "add: Request needs to be of instance Rcurl\Group\Request or an array");
     }
 
-    function addToRC(var rc)
+    public function addToRC(<\Rcurl\Curl> rc) -> bool
     {
-        if(!(rc instanceof Curl)) {
-            throw new Exception("addToRC: RC needs to be of instance Rcurl\Curl");
-        }
-
-        var ret1;
         while(count(this->requests) > 0) {
             if(!rc->add(array_shift(this->requests))) {
                 return false;
@@ -55,14 +50,14 @@ class Group
         return true;
     }
 
-    public function process(var output, var info, var request)
+    public function process(var output, var info, var request) -> void
     {
-        let this->finished_requests = this->finished_request + 1;
+        let this->finished_requests = this->finished_requests + 1;
 
         if(this->finished_requests >= this->num_requests) {
             this->finished();
         }
     }
 
-    public function finished() {}
+    public function finished() -> void {}
 }
