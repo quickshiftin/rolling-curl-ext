@@ -19,7 +19,7 @@ class Group
 
             request->setGroup(this);
 
-            let this->num_requests = this->num_requests++;
+            let this->num_requests = this->num_requests + 1;
 
             this->requests[] = request;
         }
