@@ -57,13 +57,12 @@
     },
     "namespace": "rcurl",
     "name": "rcurl",
-    "description": "Description test for<br\/>Test Extension",
-    "author": "Zephir Team and contributors",
+    "description": "Native port of Rolling Curl library",
+    "author": "Nathan Nobbe",
     "version": "1.0.0",
     "verbose": true,
     "requires": {
         "extensions": [
-
         ]
     },
     "globals": {
