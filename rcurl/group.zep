@@ -1,5 +1,7 @@
 namespace Rcurl;
 
+use \Rcurl\Group\Exception as Exception;
+
 class Group
 {
     protected name;
@@ -16,23 +18,24 @@ class Group
     public function add(var request)
     {
         if(request instanceof \Rcurl\Group\Request) {
-
             request->setGroup(this);
 
             let this->num_requests = this->num_requests + 1;
 
-            this->requests[] = request;
+            let this->requests[] = request;
+
+            return true;
         }
 		elseif(is_array(request)) {
+            var req;
             for req in request {
                 this->add(req);
             }
-        }
-        else {
-            throw new \Rcurl\Group\Exception(
-                "add: Request needs to be of instance Rcurl\Group\Request or an array");
+
+            return true;
         }
 
-       return true;
+        throw new Exception(
+            "add: Request needs to be of instance Rcurl\Group\Request or an array");
     }
 }
