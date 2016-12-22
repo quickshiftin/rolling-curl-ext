@@ -208,7 +208,7 @@ class Curl
                 call_user_func(this->callback, output, info, request, error);
             }
         }
-        else {
+		else {
             return output;
         }
 
@@ -231,20 +231,20 @@ class Curl
         // NOTE: The PHP cURL library won"t follow redirects if either safe_mode is on
         // or open_basedir is defined.
         // See: https://bugs.php.net/bug.php?id=30609
-        if((ini_get("safe_mode") == "Off" || !ini_get("safe_mode")) &&
+		if((ini_get("safe_mode") == "Off" || !ini_get("safe_mode")) &&
            ini_get("open_basedir") == "")
         {
             let options[CURLOPT_FOLLOWLOCATION] = 1;
-            let options[CURLOPT_MAXREDIRS]      = 5;
+			let options[CURLOPT_MAXREDIRS]      = 5;
         }
         var headers = this->__get("headers");
 
-        // append custom options for this specific request
-        if(request->options) {
+		// append custom options for this specific request
+		if(request->options) {
             let options = request->options + options;
         }
 
-        // set the request URL
+		// set the request URL
         let options[CURLOPT_URL] = request->url;
 
         // posting data w/ this request?
@@ -333,22 +333,79 @@ class Curl
             let i = i + 1;
         }
 
-        var execrun, running, done;
-        var info, output, sCurlError, errorno, errno, callback, request;
-        do {
+        var execrun, running, runningInside;
+        var info, output, sCurlErr, errorno, errno, callback, request;
 
+        do {
             loop {
                 let execrun = curl_multi_exec(master, running);
 
                 if(execrun != CURLM_CALL_MULTI_PERFORM) {
                     break;
-                }
+                }   
             }
 
             if(execrun != CURLM_OK) {
                 break;
             }
 
+            // a request was just completed -- find out which one
+
+            loop {
+                let runningInside = curl_multi_info_read(master);
+
+                if(!runningInside) {
+                    break;
+                }
+
+                // get the info and content returned on the request
+                let info     = curl_getinfo(runningInside["handle"]);
+                let output   = curl_multi_getcontent(runningInside["handle"]);
+                let sCurlErr = "";
+                let errorno  = curl_errno(runningInside["handle"]);
+
+                if(errorno) {
+                    let sCurlErr = curl_strerror(errno);
+                }
+
+        /* @note Saving the response of all the requests adds up when you pass a large number of urls!
+                array_push($this->returns, array(
+                    'return'    =>  $output,
+                    'info'      =>  $info,
+                ));
+        */
+
+                // send the return values to the callback function.
+                let callback = this->callback;
+                if(is_callable(callback)) {
+                    let key     = (string)runningInside["handle"];
+                    let request = this->requests[this->requestMap[key]];
+                    unset(this->requestMap[key]);
+                    call_user_func(callback, output, info, request, sCurlErr);
+                }
+
+                // start a new request (it's important to do this before removing the old one)
+                if(i < sizeof(this->requests) && isset(this->requests[i]) && i < count(this->requests)) {
+                    let ch      = curl_init();
+                    let options = this->get_options(this->requests[i]);
+
+                    curl_setopt_array(ch, options);
+                    curl_multi_add_handle(master, ch);
+
+                    // Add to our request Maps
+                    let key = (string)ch;
+                    let this->requestMap[key] = i;
+                    let i = i + 1;
+                }
+
+                // remove the curl handle that just completed
+                curl_multi_remove_handle(master, runningInside["handle"]);
+            }
+
+            // Block for data in / output; error handling is runningInside by curl_multi_exec
+            if(running) {
+                curl_multi_select(master, this->timeout);
+            }
 
         } while(running);
 
@@ -357,4 +414,3 @@ class Curl
         return true;
     }
 }
-
