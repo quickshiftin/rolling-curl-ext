@@ -346,7 +346,7 @@ class Curl
         }
 
         var execrun, running, runningInside;
-        var info, output, sCurlErr, errorno, errno, callback, request;
+        var info, output, sCurlErr, errorno, callback, request;
 
         do {
             loop {
@@ -376,7 +376,7 @@ class Curl
                 let errorno  = curl_errno(runningInside["handle"]);
 
                 if(errorno) {
-                    let sCurlErr = curl_strerror(errno);
+                    let sCurlErr = curl_strerror(errorno);
                 }
 
                 // @note Saving the response of all the requests adds up when you pass a large number of urls!
