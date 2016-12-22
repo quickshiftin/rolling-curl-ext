@@ -67,6 +67,13 @@ class Curl
     private returns = [];
 
     /**
+     * @var bool
+     *
+     * Save responses option; needs to be enabled to store responses
+     */
+    private saveResponses = true;
+
+    /**
      * @param  $callback
      * Callback function to be applied to each result.
      *
@@ -87,6 +94,11 @@ class Curl
             CURLOPT_CONNECTTIMEOUT : 30,
             CURLOPT_TIMEOUT        : 30
         ];
+    }
+
+    public function disableResponseSaving()
+    {
+        let this->saveResponses = false;
     }
 
     /**
@@ -350,7 +362,6 @@ class Curl
             }
 
             // a request was just completed -- find out which one
-
             loop {
                 let runningInside = curl_multi_info_read(master);
 
@@ -368,12 +379,13 @@ class Curl
                     let sCurlErr = curl_strerror(errno);
                 }
 
-        /* @note Saving the response of all the requests adds up when you pass a large number of urls!
-                array_push($this->returns, array(
-                    'return'    =>  $output,
-                    'info'      =>  $info,
-                ));
-        */
+                // @note Saving the response of all the requests adds up when you pass a large number of urls!
+                if(this->saveResponses) {
+                    array_push(this->returns, [
+                        "return" : output,
+                        "info"   : info
+                    ]);
+                }
 
                 // send the return values to the callback function.
                 let callback = this->callback;
