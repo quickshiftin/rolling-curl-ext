@@ -22,7 +22,7 @@ class Curl extends \Rcurl\Curl
 
 	public function execute(var window_size=null) -> string|bool
     {
-		if(count(this->requests) == 0) {
+		if(count(this->__get("requests")) == 0) {
 			return false;
         }
 
