@@ -273,7 +273,7 @@ class Curl
         // Due to a bug in cURL CURLOPT_WRITEFUNCTION must be defined as the last option
         // Otherwise it doesn't register. So let's unset and set it again
         // See http://stackoverflow.com/questions/15937055/curl-writefunction-not-being-called
-        if(!empty(options[CURLOPT_WRITEFUNCTION])) {
+        if(isset(options[CURLOPT_WRITEFUNCTION]) && !empty(options[CURLOPT_WRITEFUNCTION])) {
             var writeCallback = options[CURLOPT_WRITEFUNCTION];
 
             unset(options[CURLOPT_WRITEFUNCTION]);
